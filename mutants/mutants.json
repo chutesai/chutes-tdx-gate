@@ -1,0 +1,2076 @@
+{
+ "repository": "chutesai/chutes-tdx-gate",
+ "group": "the gate's checks, in Go and in the Python library form",
+ "mutants": [
+  {
+   "id": "K01",
+   "check": "4.3 endpoint_id check removed (Go)",
+   "edits": [
+    {
+     "file": "pkg/e2ev2/open.go",
+     "old": "\tif env.endpointID != p.Identity.EndpointID {",
+     "new": "\tif false {"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K02",
+   "check": "4.3 instance_id check removed (Go)",
+   "edits": [
+    {
+     "file": "pkg/e2ev2/open.go",
+     "old": "\tif env.instanceID != p.Identity.InstanceID {",
+     "new": "\tif false {"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K03",
+   "check": "4.3 method check removed (Go)",
+   "edits": [
+    {
+     "file": "pkg/e2ev2/open.go",
+     "old": "\tif strings.ToUpper(p.Method) != \"POST\" {",
+     "new": "\tif false {"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K04",
+   "check": "4.3 presented path check removed (Go)",
+   "edits": [
+    {
+     "file": "pkg/e2ev2/open.go",
+     "old": "\tif p.PresentedPath != env.path {",
+     "new": "\tif false {"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K05",
+   "check": "4.3 route (path, POST, stream) check removed (Go)",
+   "edits": [
+    {
+     "file": "pkg/e2ev2/open.go",
+     "old": "\tif !ok {\n\t\treturn nil, refusal(\"e2e_v2_route_not_served\")",
+     "new": "\tif !ok && false {\n\t\treturn nil, refusal(\"e2e_v2_route_not_served\")"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K06",
+   "check": "4.3 body.stream = bound stream check removed (Go)",
+   "edits": [
+    {
+     "file": "pkg/e2ev2/open.go",
+     "old": "\tif bodyStream != env.stream {",
+     "new": "\tif bodyStream != env.stream && false {"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K07",
+   "check": "4.3 stale check removed (Go)",
+   "edits": [
+    {
+     "file": "pkg/e2ev2/replay.go",
+     "old": "\tif ts < now-MaxAgeMS || ts <= c.floor {",
+     "new": "\tif false {"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K08",
+   "check": "4.3 future check removed (Go)",
+   "edits": [
+    {
+     "file": "pkg/e2ev2/replay.go",
+     "old": "\tif ts > now+MaxFutureMS {",
+     "new": "\tif false {"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K09",
+   "check": "4.3 replay check removed (Go)",
+   "edits": [
+    {
+     "file": "pkg/e2ev2/replay.go",
+     "old": "\tif _, ok := c.seen[nonce]; ok {",
+     "new": "\tif _, ok := c.seen[nonce]; ok && false {"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K10",
+   "check": "4.3 busy (cache bound) check removed (Go)",
+   "edits": [
+    {
+     "file": "pkg/e2ev2/replay.go",
+     "old": "\tif len(c.seen) >= c.maxEntries {",
+     "new": "\tif false {"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K11",
+   "check": "4.3 nonce consumed first instead of last (Go)",
+   "edits": [
+    {
+     "file": "pkg/e2ev2/open.go",
+     "old": "\tif !p.Identity.Known {",
+     "new": "\tif ref := p.Cache.Admit(env.nonce, env.ts, p.NowMS); ref != nil {\n\t\treturn nil, ref\n\t}\n\tif !p.Identity.Known {"
+    },
+    {
+     "file": "pkg/e2ev2/open.go",
+     "old": "\tif ref := p.Cache.Admit(env.nonce, env.ts, p.NowMS); ref != nil {\n\t\treturn nil, ref\n\t}\n\treturn &Opened{",
+     "new": "\treturn &Opened{"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K12",
+   "check": "the stream's end sealed after an application failure (Go)",
+   "edits": [
+    {
+     "file": "pkg/gate/gate.go",
+     "old": "\t\t\tg.log.Info(\"e2e\", \"route\", route, \"status\", http.StatusOK, \"code\", \"stream_cut\")",
+     "new": "\t\t\tif end, serr := sealer.End(); serr == nil {\n\t\t\t\twrite(sseEvent(\"e2e\", end))\n\t\t\t}"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K13",
+   "check": "an application header passed to the caller (Go)",
+   "edits": [
+    {
+     "file": "pkg/gate/gate.go",
+     "old": "\tblob, err := e2ev2.SealAnswer(opened, resp.StatusCode, body)",
+     "new": "\tfor k, v := range resp.Header {\n\t\tw.Header()[k] = v\n\t}\n\tblob, err := e2ev2.SealAnswer(opened, resp.StatusCode, body)"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K14",
+   "check": "/attest quotes caller-chosen REPORTDATA (Go)",
+   "edits": [
+    {
+     "file": "pkg/attest/attest.go",
+     "old": "\trd := ReportData(nonce, h.PublicKey)",
+     "new": "\tvar rd [64]byte\n\tcopy(rd[:], nonce[:])"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K15",
+   "check": "the ML-KEM key written to disk (Go)",
+   "edits": [
+    {
+     "file": "cmd/tdx-gate/main.go",
+     "old": "\tkey, mark, restored, err := perBootKey(logger)\n\tif err != nil {\n\t\treturn err\n\t}",
+     "new": "\tkey, mark, restored, err := perBootKey(logger)\n\tif err != nil {\n\t\treturn err\n\t}\n\t_ = os.WriteFile(\"/var/lib/tdx-gate/key\", key.PublicKey(), 0o600)"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K16",
+   "check": "the identity taken from a request header (Go)",
+   "edits": [
+    {
+     "file": "pkg/gate/gate.go",
+     "old": "\t\tIdentity:      g.Identity(),",
+     "new": "\t\tIdentity: func() e2ev2.Identity {\n\t\t\tif h := r.Header.Get(\"X-Chutes-Endpoint-Id\"); h != \"\" {\n\t\t\t\treturn e2ev2.Identity{EndpointID: h, InstanceID: r.Header.Get(\"X-Instance-Id\"), Known: true}\n\t\t\t}\n\t\t\treturn g.Identity()\n\t\t}(),"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K17",
+   "check": "a non-boolean body.stream admitted by truthiness (Go)",
+   "edits": [
+    {
+     "file": "pkg/e2ev2/open.go",
+     "old": "\t\tif s.Kind != sjson.Bool {\n\t\t\treturn nil, refusal(\"e2e_v2_stream_mismatch\")\n\t\t}\n\t\tbodyStream = s.Bool",
+     "new": "\t\tbodyStream = (s.Kind == sjson.Bool && s.Bool) || (s.Kind == sjson.Number && s.Num != \"0\") || (s.Kind == sjson.String && s.Str != \"\")"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K18",
+   "check": "a non-printable id admitted (Go)",
+   "edits": [
+    {
+     "file": "pkg/e2ev2/open.go",
+     "old": "\tif r == ' ' {",
+     "new": "\tif true {"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K19",
+   "check": "a refusal code outside the 15 (Go)",
+   "edits": [
+    {
+     "file": "pkg/e2ev2/refusal.go",
+     "old": "\t\"e2e_v2_replayed\":         409,",
+     "new": "\t\"e2e_v2_replay\":           409,"
+    },
+    {
+     "file": "pkg/e2ev2/replay.go",
+     "old": "\t\treturn refusal(\"e2e_v2_replayed\")",
+     "new": "\t\treturn refusal(\"e2e_v2_replay\")"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K20",
+   "check": "4.3 identity-known check removed (Go)",
+   "edits": [
+    {
+     "file": "pkg/e2ev2/open.go",
+     "old": "\tif !p.Identity.Known {",
+     "new": "\tif false {"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K21",
+   "check": "gzip: bytes after the member accepted (Go)",
+   "edits": [
+    {
+     "file": "pkg/e2ev2/crypto.go",
+     "old": "\tif (err != io.EOF && err != io.ErrUnexpectedEOF) || src.Len() != 0 {",
+     "new": "\tif err != io.EOF && err != io.ErrUnexpectedEOF {"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K22",
+   "check": "the envelope's closed field set not enforced (Go)",
+   "edits": [
+    {
+     "file": "pkg/sjson/sjson.go",
+     "old": "len(v.Members) != len(keys) {",
+     "new": "len(v.Members) < len(keys) {"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K23",
+   "check": "/health healthy without the application (Go)",
+   "edits": [
+    {
+     "file": "pkg/gate/gate.go",
+     "old": "\tif g.Identity().Known && g.appHealthy(r.Context()) {",
+     "new": "\tif g.Identity().Known {"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K24",
+   "check": "/health healthy before the identity is known (Go)",
+   "edits": [
+    {
+     "file": "pkg/gate/gate.go",
+     "old": "\tif g.Identity().Known && g.appHealthy(r.Context()) {",
+     "new": "\tif g.appHealthy(r.Context()) {"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K25",
+   "check": "/attest nonce query: upper-case hex admitted (Go)",
+   "edits": [
+    {
+     "file": "pkg/attest/attest.go",
+     "old": "\t\tif !(c >= '0' && c <= '9' || c >= 'a' && c <= 'f') {",
+     "new": "\t\tif !(c >= '0' && c <= '9' || c >= 'a' && c <= 'f' || c >= 'A' && c <= 'F') {"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K26",
+   "check": "configfs-tsm generation check removed (Go)",
+   "edits": [
+    {
+     "file": "pkg/attest/tsm.go",
+     "old": "\tif second != first+1 {",
+     "new": "\tif second != first+1 && false {"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K27",
+   "check": "configfs-tsm provider check removed (Go)",
+   "edits": [
+    {
+     "file": "pkg/attest/tsm.go",
+     "old": "\tif provider != \"tdx_guest\" {",
+     "new": "\tif false {"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K28",
+   "check": "the answer size cap removed (Go)",
+   "edits": [
+    {
+     "file": "pkg/gate/gate.go",
+     "old": "\tcase over:\n",
+     "new": "\tcase over && false:\n"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K29",
+   "check": "the in-flight cap removed (Go)",
+   "edits": [
+    {
+     "file": "pkg/gate/gate.go",
+     "old": "\t\tsem:    make(chan struct{}, cfg.Limits.MaxInflight),",
+     "new": "\t\tsem:    make(chan struct{}, cfg.Limits.MaxInflight+1000),"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K30",
+   "check": "the application request carries an added header (identity) (Go)",
+   "edits": [
+    {
+     "file": "pkg/gate/gate.go",
+     "old": "\t\t\"User-Agent\":   {\"\"}, // an explicit empty User-Agent sends none",
+     "new": "\t\t\"User-Agent\":   {\"\"},\n\t\t\"X-Chutes-Path\": {opened.Path},"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K31",
+   "check": "the listen port not pinned to 8080 (Go)",
+   "edits": [
+    {
+     "file": "pkg/gate/config.go",
+     "old": "\tif err != nil || port != strconv.Itoa(ServicePort) {",
+     "new": "\tif err != nil || port == \"\" {"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K32",
+   "check": "a static identity served without --test-identity (Go)",
+   "edits": [
+    {
+     "file": "cmd/tdx-gate/main.go",
+     "old": "\tif cfg.IdentitySource == \"static\" && !testIdentity {",
+     "new": "\tif false {"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K33",
+   "check": "the faketsm test build serves without --test-identity (Go)",
+   "edits": [
+    {
+     "file": "cmd/tdx-gate/quoter_faketsm.go",
+     "old": "\tif !testIdentity {",
+     "new": "\tif false {"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "-tags",
+    "faketsm",
+    "./cmd/..."
+   ]
+  },
+  {
+   "id": "P01",
+   "check": "4.3 endpoint_id check removed (Python)",
+   "edits": [
+    {
+     "file": "python/chutes_tdx_gate/e2e.py",
+     "old": "    if env[\"endpoint_id\"] != identity.endpoint_id:",
+     "new": "    if False:"
+    }
+   ],
+   "test": [
+    "env",
+    "PYTHONPATH=python",
+    "{python}",
+    "-m",
+    "pytest",
+    "-q",
+    "-x",
+    "-p",
+    "no:cacheprovider",
+    "python/tests"
+   ]
+  },
+  {
+   "id": "P02",
+   "check": "4.3 instance_id check removed (Python)",
+   "edits": [
+    {
+     "file": "python/chutes_tdx_gate/e2e.py",
+     "old": "    if env[\"instance_id\"] != identity.instance_id:",
+     "new": "    if False:"
+    }
+   ],
+   "test": [
+    "env",
+    "PYTHONPATH=python",
+    "{python}",
+    "-m",
+    "pytest",
+    "-q",
+    "-x",
+    "-p",
+    "no:cacheprovider",
+    "python/tests"
+   ]
+  },
+  {
+   "id": "P03",
+   "check": "4.3 method check removed (Python)",
+   "edits": [
+    {
+     "file": "python/chutes_tdx_gate/e2e.py",
+     "old": "    if method.upper() != \"POST\":",
+     "new": "    if False:"
+    }
+   ],
+   "test": [
+    "env",
+    "PYTHONPATH=python",
+    "{python}",
+    "-m",
+    "pytest",
+    "-q",
+    "-x",
+    "-p",
+    "no:cacheprovider",
+    "python/tests"
+   ]
+  },
+  {
+   "id": "P04",
+   "check": "4.3 presented path check removed (Python)",
+   "edits": [
+    {
+     "file": "python/chutes_tdx_gate/e2e.py",
+     "old": "    if presented_path != env[\"path\"]:",
+     "new": "    if False:"
+    }
+   ],
+   "test": [
+    "env",
+    "PYTHONPATH=python",
+    "{python}",
+    "-m",
+    "pytest",
+    "-q",
+    "-x",
+    "-p",
+    "no:cacheprovider",
+    "python/tests"
+   ]
+  },
+  {
+   "id": "P05",
+   "check": "4.3 route check removed (Python)",
+   "edits": [
+    {
+     "file": "python/chutes_tdx_gate/e2e.py",
+     "old": "    if route is None:",
+     "new": "    if False:"
+    }
+   ],
+   "test": [
+    "env",
+    "PYTHONPATH=python",
+    "{python}",
+    "-m",
+    "pytest",
+    "-q",
+    "-x",
+    "-p",
+    "no:cacheprovider",
+    "python/tests"
+   ]
+  },
+  {
+   "id": "P06",
+   "check": "a non-boolean body.stream admitted by truthiness (Python)",
+   "edits": [
+    {
+     "file": "python/chutes_tdx_gate/e2e.py",
+     "old": "    if type(stated) is not bool or stated is not env[\"stream\"]:",
+     "new": "    if bool(stated) is not env[\"stream\"]:"
+    }
+   ],
+   "test": [
+    "env",
+    "PYTHONPATH=python",
+    "{python}",
+    "-m",
+    "pytest",
+    "-q",
+    "-x",
+    "-p",
+    "no:cacheprovider",
+    "python/tests"
+   ]
+  },
+  {
+   "id": "P07",
+   "check": "4.3 stale check removed (Python)",
+   "edits": [
+    {
+     "file": "python/chutes_tdx_gate/e2e.py",
+     "old": "            if ts < now_ms - MAX_AGE_MS or ts <= self.floor:",
+     "new": "            if False:"
+    }
+   ],
+   "test": [
+    "env",
+    "PYTHONPATH=python",
+    "{python}",
+    "-m",
+    "pytest",
+    "-q",
+    "-x",
+    "-p",
+    "no:cacheprovider",
+    "python/tests"
+   ]
+  },
+  {
+   "id": "P08",
+   "check": "4.3 future check removed (Python)",
+   "edits": [
+    {
+     "file": "python/chutes_tdx_gate/e2e.py",
+     "old": "            if ts > now_ms + MAX_FUTURE_MS:",
+     "new": "            if False:"
+    }
+   ],
+   "test": [
+    "env",
+    "PYTHONPATH=python",
+    "{python}",
+    "-m",
+    "pytest",
+    "-q",
+    "-x",
+    "-p",
+    "no:cacheprovider",
+    "python/tests"
+   ]
+  },
+  {
+   "id": "P09",
+   "check": "4.3 replay check removed (Python)",
+   "edits": [
+    {
+     "file": "python/chutes_tdx_gate/e2e.py",
+     "old": "            if nonce in self._seen:",
+     "new": "            if False:"
+    }
+   ],
+   "test": [
+    "env",
+    "PYTHONPATH=python",
+    "{python}",
+    "-m",
+    "pytest",
+    "-q",
+    "-x",
+    "-p",
+    "no:cacheprovider",
+    "python/tests"
+   ]
+  },
+  {
+   "id": "P10",
+   "check": "4.3 busy check removed (Python)",
+   "edits": [
+    {
+     "file": "python/chutes_tdx_gate/e2e.py",
+     "old": "            if len(self._seen) >= self.max_entries:",
+     "new": "            if False:"
+    }
+   ],
+   "test": [
+    "env",
+    "PYTHONPATH=python",
+    "{python}",
+    "-m",
+    "pytest",
+    "-q",
+    "-x",
+    "-p",
+    "no:cacheprovider",
+    "python/tests"
+   ]
+  },
+  {
+   "id": "P11",
+   "check": "4.3 nonce consumed first (Python)",
+   "edits": [
+    {
+     "file": "python/chutes_tdx_gate/e2e.py",
+     "old": "    if not identity.known:",
+     "new": "    cache.admit(env[\"nonce\"], env[\"ts\"], now_ms)\n    if not identity.known:"
+    },
+    {
+     "file": "python/chutes_tdx_gate/e2e.py",
+     "old": "    cache.admit(env[\"nonce\"], env[\"ts\"], int(time.time() * 1000) if now_ms is None else now_ms)",
+     "new": "    pass"
+    }
+   ],
+   "test": [
+    "env",
+    "PYTHONPATH=python",
+    "{python}",
+    "-m",
+    "pytest",
+    "-q",
+    "-x",
+    "-p",
+    "no:cacheprovider",
+    "python/tests"
+   ]
+  },
+  {
+   "id": "P12",
+   "check": "the stream's end sealed after an application failure (Python)",
+   "edits": [
+    {
+     "file": "python/chutes_tdx_gate/asgi.py",
+     "old": "                    break  # the app failed or stopped without finishing its body: no sealed end",
+     "new": "                    await send({\"type\": \"http.response.body\", \"body\": sealer.end(), \"more_body\": True})\n                    break"
+    }
+   ],
+   "test": [
+    "env",
+    "PYTHONPATH=python",
+    "{python}",
+    "-m",
+    "pytest",
+    "-q",
+    "-x",
+    "-p",
+    "no:cacheprovider",
+    "python/tests"
+   ]
+  },
+  {
+   "id": "P13",
+   "check": "an application header passed to the caller (Python)",
+   "edits": [
+    {
+     "file": "python/chutes_tdx_gate/asgi.py",
+     "old": "            await self._reply(send, status, wire, [(b\"content-type\", b\"application/json\")])",
+     "new": "            await self._reply(send, status, wire, [(b\"content-type\", b\"application/json\"), *start.get(\"headers\", [])])"
+    }
+   ],
+   "test": [
+    "env",
+    "PYTHONPATH=python",
+    "{python}",
+    "-m",
+    "pytest",
+    "-q",
+    "-x",
+    "-p",
+    "no:cacheprovider",
+    "python/tests"
+   ]
+  },
+  {
+   "id": "P14",
+   "check": "/attest quotes caller-chosen REPORTDATA (Python)",
+   "edits": [
+    {
+     "file": "python/chutes_tdx_gate/asgi.py",
+     "old": "        rd = attest.reportdata(nonce, self.key.public_key)",
+     "new": "        rd = nonce + bytes(32)"
+    }
+   ],
+   "test": [
+    "env",
+    "PYTHONPATH=python",
+    "{python}",
+    "-m",
+    "pytest",
+    "-q",
+    "-x",
+    "-p",
+    "no:cacheprovider",
+    "python/tests"
+   ]
+  },
+  {
+   "id": "P15",
+   "check": "the identity taken from a request header (Python)",
+   "edits": [
+    {
+     "file": "python/chutes_tdx_gate/asgi.py",
+     "old": "                    routes=self.routes, identity=self._identity, cache=self.cache, now_ms=self._clock(),",
+     "new": "                    routes=self.routes, identity=(Identity(dict(scope[\"headers\"])[b\"x-chutes-endpoint-id\"].decode(), dict(scope[\"headers\"]).get(b\"x-instance-id\", b\"\").decode()) if b\"x-chutes-endpoint-id\" in dict(scope[\"headers\"]) else self._identity), cache=self.cache, now_ms=self._clock(),"
+    }
+   ],
+   "test": [
+    "env",
+    "PYTHONPATH=python",
+    "{python}",
+    "-m",
+    "pytest",
+    "-q",
+    "-x",
+    "-p",
+    "no:cacheprovider",
+    "python/tests"
+   ]
+  },
+  {
+   "id": "P16",
+   "check": "a non-printable id admitted (Python)",
+   "edits": [
+    {
+     "file": "python/chutes_tdx_gate/e2e.py",
+     "old": "    return isinstance(value, str) and 1 <= len(value) <= 256 and value.isprintable()",
+     "new": "    return isinstance(value, str) and 1 <= len(value) <= 256"
+    }
+   ],
+   "test": [
+    "env",
+    "PYTHONPATH=python",
+    "{python}",
+    "-m",
+    "pytest",
+    "-q",
+    "-x",
+    "-p",
+    "no:cacheprovider",
+    "python/tests"
+   ]
+  },
+  {
+   "id": "P17",
+   "check": "a refusal code outside the 15 (Python)",
+   "edits": [
+    {
+     "file": "python/chutes_tdx_gate/e2e.py",
+     "old": "\"e2e_v2_replayed\": 409,",
+     "new": "\"e2e_v2_replay\": 409,"
+    },
+    {
+     "file": "python/chutes_tdx_gate/e2e.py",
+     "old": "                raise refusal(\"e2e_v2_replayed\")",
+     "new": "                raise refusal(\"e2e_v2_replay\")"
+    }
+   ],
+   "test": [
+    "env",
+    "PYTHONPATH=python",
+    "{python}",
+    "-m",
+    "pytest",
+    "-q",
+    "-x",
+    "-p",
+    "no:cacheprovider",
+    "python/tests"
+   ]
+  },
+  {
+   "id": "P18",
+   "check": "gzip: bytes after the member accepted (Python)",
+   "edits": [
+    {
+     "file": "python/chutes_tdx_gate/e2e.py",
+     "old": " or not inflater.eof or inflater.unused_data:",
+     "new": " or not inflater.eof:"
+    }
+   ],
+   "test": [
+    "env",
+    "PYTHONPATH=python",
+    "{python}",
+    "-m",
+    "pytest",
+    "-q",
+    "-x",
+    "-p",
+    "no:cacheprovider",
+    "python/tests"
+   ]
+  },
+  {
+   "id": "P19",
+   "check": "/health healthy before the identity is known (Python)",
+   "edits": [
+    {
+     "file": "python/chutes_tdx_gate/asgi.py",
+     "old": "        if self._identity.known and await self._app_healthy():",
+     "new": "        if await self._app_healthy():"
+    }
+   ],
+   "test": [
+    "env",
+    "PYTHONPATH=python",
+    "{python}",
+    "-m",
+    "pytest",
+    "-q",
+    "-x",
+    "-p",
+    "no:cacheprovider",
+    "python/tests"
+   ]
+  },
+  {
+   "id": "P20",
+   "check": "the answer size cap removed (Python)",
+   "edits": [
+    {
+     "file": "python/chutes_tdx_gate/asgi.py",
+     "old": "                if len(collected) + len(chunk) > self.config.limits.max_answer_bytes:",
+     "new": "                if False:"
+    }
+   ],
+   "test": [
+    "env",
+    "PYTHONPATH=python",
+    "{python}",
+    "-m",
+    "pytest",
+    "-q",
+    "-x",
+    "-p",
+    "no:cacheprovider",
+    "python/tests"
+   ]
+  },
+  {
+   "id": "P21",
+   "check": "configfs-tsm generation check removed (Python)",
+   "edits": [
+    {
+     "file": "python/chutes_tdx_gate/attest.py",
+     "old": "            if self._generation(entry) != first + 1:",
+     "new": "            if False:"
+    }
+   ],
+   "test": [
+    "env",
+    "PYTHONPATH=python",
+    "{python}",
+    "-m",
+    "pytest",
+    "-q",
+    "-x",
+    "-p",
+    "no:cacheprovider",
+    "python/tests"
+   ]
+  },
+  {
+   "id": "P22",
+   "check": "configfs-tsm provider check removed (Python)",
+   "edits": [
+    {
+     "file": "python/chutes_tdx_gate/attest.py",
+     "old": "            if provider != b\"tdx_guest\":",
+     "new": "            if False:"
+    }
+   ],
+   "test": [
+    "env",
+    "PYTHONPATH=python",
+    "{python}",
+    "-m",
+    "pytest",
+    "-q",
+    "-x",
+    "-p",
+    "no:cacheprovider",
+    "python/tests"
+   ]
+  },
+  {
+   "id": "K34",
+   "check": "the JSON node cap removed (Go)",
+   "edits": [
+    {
+     "file": "pkg/sjson/sjson.go",
+     "old": "\tif over(p.nodes, p.lim.MaxNodes) {",
+     "new": "\tif false {"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K35",
+   "check": "the JSON key size cap removed (Go)",
+   "edits": [
+    {
+     "file": "pkg/sjson/sjson.go",
+     "old": "\t\tif err := p.skipString(p.lim.MaxKeyBytes); err != nil {",
+     "new": "\t\tif err := p.skipString(-1); err != nil {"
+    },
+    {
+     "file": "pkg/sjson/sjson.go",
+     "old": "p.scanString(p.scratch[:0], true, p.lim.MaxKeyBytes)",
+     "new": "p.scanString(p.scratch[:0], true, -1)"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K36",
+   "check": "the key sets not charged to the budget (Go)",
+   "edits": [
+    {
+     "file": "pkg/sjson/sjson.go",
+     "old": "\t\tif p.lim.Charge != nil && !p.lim.Charge(keyCharge(p.pos-keyStart)) {",
+     "new": "\t\tif false {"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K37",
+   "check": "the built-object member cap removed (Go)",
+   "edits": [
+    {
+     "file": "pkg/sjson/sjson.go",
+     "old": "\t\t\tif over(len(members)+1, p.lim.MaxMembers) {",
+     "new": "\t\t\tif false {"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K38",
+   "check": "the built-string size cap removed (Go)",
+   "edits": [
+    {
+     "file": "pkg/sjson/sjson.go",
+     "old": "\tout, err := p.scanString(nil, true, p.lim.MaxStringBytes)",
+     "new": "\tout, err := p.scanString(nil, true, -1)"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K39",
+   "check": "the envelope's member cap removed (Go)",
+   "edits": [
+    {
+     "file": "pkg/e2ev2/open.go",
+     "old": "MaxMembers: len(envelopeKeys), Build: 1,",
+     "new": "MaxMembers: -1, Build: 1,"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K40",
+   "check": "the whole envelope built, body included (Go)",
+   "edits": [
+    {
+     "file": "pkg/e2ev2/open.go",
+     "old": "MaxMembers: len(envelopeKeys), Build: 1,",
+     "new": "MaxMembers: len(envelopeKeys), Build: -1,"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K41",
+   "check": "the gzip trailer's size not checked against the limit (Go)",
+   "edits": [
+    {
+     "file": "pkg/e2ev2/crypto.go",
+     "old": "\tif size > limit {",
+     "new": "\tif false {"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K42",
+   "check": "the inflated envelope not reserved (Go)",
+   "edits": [
+    {
+     "file": "pkg/e2ev2/crypto.go",
+     "old": "\tif !lease.Charge(size + 1) {",
+     "new": "\tif false {"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K43",
+   "check": "the opened plaintext not reserved (Go)",
+   "edits": [
+    {
+     "file": "pkg/e2ev2/open.go",
+     "old": "\tif !p.Lease.Charge(int64(len(blob))) {",
+     "new": "\tif false {"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K44",
+   "check": "the budget never full (Go)",
+   "edits": [
+    {
+     "file": "pkg/e2ev2/budget.go",
+     "old": "\tif n > b.max-b.used {",
+     "new": "\tif false {"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K45",
+   "check": "a request over the whole budget answered busy, not malformed (Go)",
+   "edits": [
+    {
+     "file": "pkg/e2ev2/budget.go",
+     "old": "\tif l.held+n > b.max {",
+     "new": "\tif false {"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K46",
+   "check": "the request body not reserved before it is read (Go)",
+   "edits": [
+    {
+     "file": "pkg/gate/gate.go",
+     "old": "\tif !lease.Charge(size) {",
+     "new": "\tif false {"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K47",
+   "check": "a request body's growth not reserved (Go)",
+   "edits": [
+    {
+     "file": "pkg/gate/gate.go",
+     "old": "\t\t\tif !lease.Charge(next) {",
+     "new": "\t\t\tif false {"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K48",
+   "check": "the answer's sealing not reserved (Go)",
+   "edits": [
+    {
+     "file": "pkg/gate/gate.go",
+     "old": "\tif !lease.Charge(e2ev2.SealCost(len(body))) {",
+     "new": "\tif false {"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K49",
+   "check": "204 and 304 answered as sealed (Go)",
+   "edits": [
+    {
+     "file": "pkg/gate/gate.go",
+     "old": "\treturn status >= 200 && status <= 599 && status != http.StatusNoContent && status != http.StatusNotModified",
+     "new": "\treturn status >= 200 && status <= 599"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K50",
+   "check": "a restart that kept the key does not close the nonce window (Go)",
+   "edits": [
+    {
+     "file": "pkg/gate/gate.go",
+     "old": "\tg.cache.RaiseFloor(floor)\n",
+     "new": ""
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K51",
+   "check": "the restart's window closed without the future margin (Go)",
+   "edits": [
+    {
+     "file": "pkg/gate/gate.go",
+     "old": "\tfloor := max(mark, nowMS+e2ev2.MaxFutureMS)",
+     "new": "\tfloor := max(mark, nowMS)"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K52",
+   "check": "an unsealed memfd taken as the stored key (Go)",
+   "edits": [
+    {
+     "file": "internal/keystore/keystore.go",
+     "old": "\tif err != nil || got&keySeals != keySeals {",
+     "new": "\tif err != nil || got < 0 {"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K53",
+   "check": "a stored key of another size taken (Go)",
+   "edits": [
+    {
+     "file": "internal/keystore/keystore.go",
+     "old": "\tif err := unix.Fstat(fd, &st); err != nil || st.Size != SeedSize {",
+     "new": "\tif err := unix.Fstat(fd, &st); err != nil {"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K54",
+   "check": "another process's LISTEN_FDS taken (Go)",
+   "edits": [
+    {
+     "file": "internal/keystore/keystore.go",
+     "old": "\tif getenv(\"LISTEN_PID\") != strconv.Itoa(pid) {",
+     "new": "\tif false {"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K55",
+   "check": "the stored memfd not sealed (Go)",
+   "edits": [
+    {
+     "file": "internal/keystore/keystore.go",
+     "old": "unix.FcntlInt(uintptr(fd), unix.F_ADD_SEALS, seals)",
+     "new": "unix.FcntlInt(uintptr(fd), unix.F_GET_SEALS, 0)"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K56",
+   "check": "a memory budget below one request accepted at start (Go)",
+   "edits": [
+    {
+     "file": "cmd/tdx-gate/main.go",
+     "old": "\tif minimum := gate.MinBudget(cfg.Limits); budget < minimum {",
+     "new": "\tif minimum := gate.MinBudget(cfg.Limits); false && budget < minimum {"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K57",
+   "check": "app.base with a trailing slash accepted (Go)",
+   "edits": [
+    {
+     "file": "pkg/gate/config.go",
+     "old": "u.Opaque != \"\" || u.Path != \"\" || u.ForceQuery {",
+     "new": "u.Opaque != \"\" || (u.Path != \"\" && u.Path != \"/\") || u.ForceQuery {"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K58",
+   "check": "the unit not restarted on failure (unit)",
+   "edits": [
+    {
+     "file": "deploy/systemd/tdx-gate.service",
+     "old": "Restart=on-failure\n",
+     "new": "Restart=no\n"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K59",
+   "check": "the unit's file descriptor store holds the key but not the mark (unit)",
+   "edits": [
+    {
+     "file": "deploy/systemd/tdx-gate.service",
+     "old": "FileDescriptorStoreMax=2\n",
+     "new": "FileDescriptorStoreMax=1\n"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K60",
+   "check": "the unit without a memory bound (unit)",
+   "edits": [
+    {
+     "file": "deploy/systemd/tdx-gate.service",
+     "old": "MemoryMax=1G\n",
+     "new": ""
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "P23",
+   "check": "the envelope's node cap removed (Python)",
+   "edits": [
+    {
+     "file": "python/chutes_tdx_gate/e2e.py",
+     "old": "    if nodes > strict_json.MAX_NODES:\n        raise malformed",
+     "new": "    if False:\n        raise malformed"
+    },
+    {
+     "file": "python/chutes_tdx_gate/e2e.py",
+     "old": "strict_json.loads(plain, max_nodes=strict_json.MAX_NODES, nodes=nodes)",
+     "new": "strict_json.loads(plain)"
+    }
+   ],
+   "test": [
+    "env",
+    "PYTHONPATH=python",
+    "{python}",
+    "-m",
+    "pytest",
+    "-q",
+    "-x",
+    "-p",
+    "no:cacheprovider",
+    "python/tests"
+   ]
+  },
+  {
+   "id": "P24",
+   "check": "the JSON key size cap removed (Python)",
+   "edits": [
+    {
+     "file": "python/chutes_tdx_gate/strict_json.py",
+     "old": "            if len(key) * 4 > max_key_bytes and",
+     "new": "            if False and"
+    }
+   ],
+   "test": [
+    "env",
+    "PYTHONPATH=python",
+    "{python}",
+    "-m",
+    "pytest",
+    "-q",
+    "-x",
+    "-p",
+    "no:cacheprovider",
+    "python/tests"
+   ]
+  },
+  {
+   "id": "P25",
+   "check": "the gzip trailer's size not checked against the limit (Python)",
+   "edits": [
+    {
+     "file": "python/chutes_tdx_gate/e2e.py",
+     "old": "    if size > limit:\n        raise refusal(\"e2e_v2_malformed\")\n    _charge(lease, size + 1)",
+     "new": "    _charge(lease, size + 1)"
+    }
+   ],
+   "test": [
+    "env",
+    "PYTHONPATH=python",
+    "{python}",
+    "-m",
+    "pytest",
+    "-q",
+    "-x",
+    "-p",
+    "no:cacheprovider",
+    "python/tests"
+   ]
+  },
+  {
+   "id": "P26",
+   "check": "the inflated envelope not reserved (Python)",
+   "edits": [
+    {
+     "file": "python/chutes_tdx_gate/e2e.py",
+     "old": "    _charge(lease, size + 1)",
+     "new": "    _charge(lease, 0)"
+    }
+   ],
+   "test": [
+    "env",
+    "PYTHONPATH=python",
+    "{python}",
+    "-m",
+    "pytest",
+    "-q",
+    "-x",
+    "-p",
+    "no:cacheprovider",
+    "python/tests"
+   ]
+  },
+  {
+   "id": "P27",
+   "check": "a request over the whole budget answered busy, not malformed (Python)",
+   "edits": [
+    {
+     "file": "python/chutes_tdx_gate/e2e.py",
+     "old": "            raise refusal(\"e2e_v2_answer_too_large\" if answer else \"e2e_v2_malformed\")",
+     "new": "            raise busy(1)"
+    }
+   ],
+   "test": [
+    "env",
+    "PYTHONPATH=python",
+    "{python}",
+    "-m",
+    "pytest",
+    "-q",
+    "-x",
+    "-p",
+    "no:cacheprovider",
+    "python/tests"
+   ]
+  },
+  {
+   "id": "P28",
+   "check": "the parse not reserved (Python)",
+   "edits": [
+    {
+     "file": "python/chutes_tdx_gate/e2e.py",
+     "old": "    _charge(lease, parse_cost(plain, nodes))",
+     "new": "    _charge(lease, 0)"
+    }
+   ],
+   "test": [
+    "env",
+    "PYTHONPATH=python",
+    "{python}",
+    "-m",
+    "pytest",
+    "-q",
+    "-x",
+    "-p",
+    "no:cacheprovider",
+    "python/tests"
+   ]
+  },
+  {
+   "id": "P29",
+   "check": "a forked process served (Python)",
+   "edits": [
+    {
+     "file": "python/chutes_tdx_gate/asgi.py",
+     "old": "        if os.getpid() != self._pid:",
+     "new": "        if False:"
+    }
+   ],
+   "test": [
+    "env",
+    "PYTHONPATH=python",
+    "{python}",
+    "-m",
+    "pytest",
+    "-q",
+    "-x",
+    "-p",
+    "no:cacheprovider",
+    "python/tests"
+   ]
+  },
+  {
+   "id": "P30",
+   "check": "204 and 304 answered as sealed (Python)",
+   "edits": [
+    {
+     "file": "python/chutes_tdx_gate/asgi.py",
+     "old": "or not 200 <= start[\"status\"] <= 599 or start[\"status\"] in (204, 304)):",
+     "new": "or not 200 <= start[\"status\"] <= 599):"
+    }
+   ],
+   "test": [
+    "env",
+    "PYTHONPATH=python",
+    "{python}",
+    "-m",
+    "pytest",
+    "-q",
+    "-x",
+    "-p",
+    "no:cacheprovider",
+    "python/tests"
+   ]
+  },
+  {
+   "id": "P31",
+   "check": "the request opened on the event loop (Python)",
+   "edits": [
+    {
+     "file": "python/chutes_tdx_gate/asgi.py",
+     "old": "                opened = await asyncio.to_thread(\n                    open_request, self.key, blob,",
+     "new": "                opened = (lambda *a, **k: open_request(*a, **k))(\n                    self.key, blob,"
+    }
+   ],
+   "test": [
+    "env",
+    "PYTHONPATH=python",
+    "{python}",
+    "-m",
+    "pytest",
+    "-q",
+    "-x",
+    "-p",
+    "no:cacheprovider",
+    "python/tests"
+   ]
+  },
+  {
+   "id": "P32",
+   "check": "app.base with a trailing slash accepted (Python)",
+   "edits": [
+    {
+     "file": "python/chutes_tdx_gate/config.py",
+     "old": "or parts.path != \"\" or base.endswith(\"?\")",
+     "new": "or parts.path not in (\"\", \"/\")"
+    }
+   ],
+   "test": [
+    "env",
+    "PYTHONPATH=python",
+    "{python}",
+    "-m",
+    "pytest",
+    "-q",
+    "-x",
+    "-p",
+    "no:cacheprovider",
+    "python/tests"
+   ]
+  },
+  {
+   "id": "P33",
+   "check": "a memory budget below one request accepted (Python)",
+   "edits": [
+    {
+     "file": "python/chutes_tdx_gate/asgi.py",
+     "old": "        if memory_budget < min_budget(config.limits):",
+     "new": "        if False:"
+    }
+   ],
+   "test": [
+    "env",
+    "PYTHONPATH=python",
+    "{python}",
+    "-m",
+    "pytest",
+    "-q",
+    "-x",
+    "-p",
+    "no:cacheprovider",
+    "python/tests"
+   ]
+  },
+  {
+   "id": "P34",
+   "check": "the answer's sealing not reserved (Python)",
+   "edits": [
+    {
+     "file": "python/chutes_tdx_gate/asgi.py",
+     "old": "            lease.charge(seal_cost(len(collected)), answer=True)",
+     "new": "            pass"
+    }
+   ],
+   "test": [
+    "env",
+    "PYTHONPATH=python",
+    "{python}",
+    "-m",
+    "pytest",
+    "-q",
+    "-x",
+    "-p",
+    "no:cacheprovider",
+    "python/tests"
+   ]
+  },
+  {
+   "id": "P35",
+   "check": "the request body not reserved as it is read (Python)",
+   "edits": [
+    {
+     "file": "python/chutes_tdx_gate/asgi.py",
+     "old": "            lease.charge(3 * len(chunk))  # the bytearray's growth and the final copy",
+     "new": "            pass"
+    }
+   ],
+   "test": [
+    "env",
+    "PYTHONPATH=python",
+    "{python}",
+    "-m",
+    "pytest",
+    "-q",
+    "-x",
+    "-p",
+    "no:cacheprovider",
+    "python/tests"
+   ]
+  },
+  {
+   "id": "P36",
+   "check": "the opened plaintext not reserved (Python)",
+   "edits": [
+    {
+     "file": "python/chutes_tdx_gate/e2e.py",
+     "old": "    blob = bytes(blob)\n    _charge(lease, len(blob))",
+     "new": "    blob = bytes(blob)"
+    }
+   ],
+   "test": [
+    "env",
+    "PYTHONPATH=python",
+    "{python}",
+    "-m",
+    "pytest",
+    "-q",
+    "-x",
+    "-p",
+    "no:cacheprovider",
+    "python/tests"
+   ]
+  },
+  {
+   "id": "K61",
+   "check": "a restarted gate's floor ignores the stored mark",
+   "edits": [
+    {
+     "file": "pkg/gate/gate.go",
+     "old": "\tfloor := max(mark, nowMS+e2ev2.MaxFutureMS)",
+     "new": "\tfloor := nowMS + e2ev2.MaxFutureMS"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K62",
+   "check": "the mark not written before an admission that raises it",
+   "edits": [
+    {
+     "file": "pkg/e2ev2/replay.go",
+     "old": "\tif c.persist != nil && ts > c.mark {",
+     "new": "\tif false {"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K63",
+   "check": "a failed mark write admits the request",
+   "edits": [
+    {
+     "file": "pkg/e2ev2/replay.go",
+     "old": "\t\tif err := c.persist(ts); err != nil {",
+     "new": "\t\tif err := c.persist(ts); err != nil && false {"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K64",
+   "check": "an older ts lowers the mark",
+   "edits": [
+    {
+     "file": "pkg/e2ev2/replay.go",
+     "old": "\tif c.persist != nil && ts > c.mark {",
+     "new": "\tif c.persist != nil && ts != c.mark {"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K65",
+   "check": "a stored mark of another size taken",
+   "edits": [
+    {
+     "file": "internal/keystore/keystore.go",
+     "old": "\tif err := unix.Fstat(fd, &st); err != nil || st.Size != MarkSize {",
+     "new": "\tif err := unix.Fstat(fd, &st); err != nil {"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K66",
+   "check": "a stored mark that can grow taken",
+   "edits": [
+    {
+     "file": "internal/keystore/keystore.go",
+     "old": "\tif err != nil || got&markSeals != markSeals {",
+     "new": "\tif err != nil || got&unix.F_SEAL_SEAL == 0 {"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K67",
+   "check": "serve not persisting admissions into the stored mark",
+   "edits": [
+    {
+     "file": "cmd/tdx-gate/main.go",
+     "old": "\tg.PersistAdmitted(mark.Set, high)\n",
+     "new": ""
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K68",
+   "check": "busy after the application ran (Go)",
+   "edits": [
+    {
+     "file": "pkg/gate/gate.go",
+     "old": "\tcase busy:\n\t\tg.refuse(w, e2ev2.NewRefusal(\"e2e_v2_answer_too_large\"), route)",
+     "new": "\tcase busy:\n\t\tg.refuse(w, e2ev2.Busy(1), route)"
+    },
+    {
+     "file": "pkg/gate/gate.go",
+     "old": "\tif !lease.Charge(e2ev2.SealCost(len(body))) {\n\t\tg.refuse(w, e2ev2.NewRefusal(\"e2e_v2_answer_too_large\"), route)",
+     "new": "\tif !lease.Charge(e2ev2.SealCost(len(body))) {\n\t\tg.refuse(w, e2ev2.Busy(1), route)"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K69",
+   "check": "the stream's buffers not reserved before admission (Go)",
+   "edits": [
+    {
+     "file": "pkg/gate/gate.go",
+     "old": "\tif !lease.Charge(StreamReserve) {\n\t\tg.refuse(w, lease.Refusal(), \"-\")\n\t\treturn\n\t}\n",
+     "new": ""
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "K70",
+   "check": "long keys charged their bytes only",
+   "edits": [
+    {
+     "file": "pkg/sjson/sjson.go",
+     "old": "func keyCharge(n int) int64 { return int64(n) + int64(n)/8 + KeyCost }",
+     "new": "func keyCharge(n int) int64 { return int64(n) + KeyCost }"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  },
+  {
+   "id": "P37",
+   "check": "busy after the application ran (Python)",
+   "edits": [
+    {
+     "file": "python/chutes_tdx_gate/e2e.py",
+     "old": "                raise refusal(\"e2e_v2_answer_too_large\") if answer else busy(1)",
+     "new": "                raise busy(1)"
+    }
+   ],
+   "test": [
+    "env",
+    "PYTHONPATH=python",
+    "{python}",
+    "-m",
+    "pytest",
+    "-q",
+    "-x",
+    "-p",
+    "no:cacheprovider",
+    "python/tests"
+   ]
+  },
+  {
+   "id": "P38",
+   "check": "the stream's reservation not made before admission (Python)",
+   "edits": [
+    {
+     "file": "python/chutes_tdx_gate/asgi.py",
+     "old": "                lease.charge(STREAM_RESERVE)\n",
+     "new": ""
+    }
+   ],
+   "test": [
+    "env",
+    "PYTHONPATH=python",
+    "{python}",
+    "-m",
+    "pytest",
+    "-q",
+    "-x",
+    "-p",
+    "no:cacheprovider",
+    "python/tests"
+   ]
+  },
+  {
+   "id": "P39",
+   "check": "an integer that overflows a float not refused (strict JSON, Python)",
+   "edits": [
+    {
+     "file": "python/chutes_tdx_gate/strict_json.py",
+     "old": "parse_float=_float, parse_int=_int)",
+     "new": "parse_float=_float)"
+    }
+   ],
+   "test": [
+    "env",
+    "PYTHONPATH=python",
+    "{python}",
+    "-m",
+    "pytest",
+    "-q",
+    "-x",
+    "-p",
+    "no:cacheprovider",
+    "python/tests"
+   ]
+  },
+  {
+   "id": "K71",
+   "check": "an integer that overflows a float not refused (strict JSON, Go)",
+   "edits": [
+    {
+     "file": "pkg/sjson/sjson.go",
+     "old": "\tif !exponent && intDigits <= 308 {",
+     "new": "\tif !exponent {"
+    }
+   ],
+   "test": [
+    "go",
+    "test",
+    "./..."
+   ]
+  }
+ ]
+}

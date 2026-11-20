@@ -1,0 +1,9 @@
+{"schema": "chutes.tdx-gate-config.v1",
+ "listen": "0.0.0.0:8080",
+ "app": {"base": "http://127.0.0.1:9000", "health_path": "/health", "timeout_s": 600},
+ "health_path": "/health",
+ "routes": [{"path": "/v1/compress", "stream": false, "app_path": "/v1/compress"}],
+ "identity": {"source": "gce-metadata"},
+ "limits": {"max_request_bytes": 8454144, "max_plaintext_bytes": 67108864, "max_answer_bytes": 16777216,
+            "max_inflight": 64, "replay_cache_entries": 65536},
+ "tsm_report_dir": "/sys/kernel/config/tsm/report"}

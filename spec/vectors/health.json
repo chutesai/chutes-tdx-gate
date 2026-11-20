@@ -1,0 +1,68 @@
+{
+ "schema": "chutes.tdx-endpoint-vectors.health.v1",
+ "request": "GET <health_path> HTTP/1.1 on the endpoint port; Host: <ip>:<port>; no other header; 5 s total; the body read up to 4096 bytes and discarded",
+ "window": "the first healthy answer (polled every 2 s) closes the key window",
+ "liveness": "after ready: every 30 s; 3 consecutive unhealthy answers fail the instance",
+ "cases": [
+  {
+   "status": 200,
+   "event": null,
+   "body_bytes": 0,
+   "expect": "healthy"
+  },
+  {
+   "status": 204,
+   "event": null,
+   "body_bytes": 0,
+   "expect": "healthy"
+  },
+  {
+   "status": 299,
+   "event": null,
+   "body_bytes": 4096,
+   "expect": "healthy"
+  },
+  {
+   "status": 200,
+   "event": null,
+   "body_bytes": 4097,
+   "expect": "unhealthy: body over 4096 bytes"
+  },
+  {
+   "status": 301,
+   "event": null,
+   "body_bytes": 0,
+   "expect": "unhealthy: no redirect is followed"
+  },
+  {
+   "status": 404,
+   "event": null,
+   "body_bytes": 0,
+   "expect": "unhealthy"
+  },
+  {
+   "status": 503,
+   "event": null,
+   "body_bytes": 0,
+   "expect": "unhealthy"
+  },
+  {
+   "status": 102,
+   "event": null,
+   "body_bytes": 0,
+   "expect": "unhealthy: an informational status alone"
+  },
+  {
+   "status": null,
+   "event": "timeout after 5 s",
+   "body_bytes": 0,
+   "expect": "unhealthy"
+  },
+  {
+   "status": null,
+   "event": "connection refused",
+   "body_bytes": 0,
+   "expect": "unhealthy"
+  }
+ ]
+}

@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "chutes-tdx-gate"
+version = "0.1.0"
+description = "The endpoint VM's side of Chutes' bring-your-own Intel TDX VM endpoints (/attest, E2E v2, health) as a Python library and ASGI middleware"
+readme = "README.md"
+requires-python = ">=3.10"
+# The repository's LICENSE: PolyForm Shield 1.0.0, which has no SPDX identifier.
+license = "LicenseRef-PolyForm-Shield-1.0.0"
+# One dependency: cryptography 48+ provides ML-KEM-768 (with seed import), HKDF and
+# ChaCha20-Poly1305 in its wheels. requirements.lock pins the exact version with hashes.
+dependencies = ["cryptography>=48"]
+
+[project.optional-dependencies]
+test = ["pytest>=8"]
+
+[tool.setuptools]
+packages = ["chutes_tdx_gate"]
